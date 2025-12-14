@@ -86,8 +86,10 @@ def _git_init_commit_push(
     base_env = os.environ.copy()
     env = _git_env_deterministic(base_env) if deterministic_git else base_env
 
-    _run(["git", "init"], cwd=workdir, env=env)
-    _run(["git", "checkout", "-b", "main"], cwd=workdir, env=env)
+    if not (workdir / ".git").exists():
+        _run(["git", "init"], cwd=workdir, env=env)
+
+    _run(["git", "checkout", "-B", "main"], cwd=workdir, env=env)
     _run(["git", "add", "-A"], cwd=workdir, env=env)
     _run(["git", "commit", "-m", "Initial commit"], cwd=workdir, env=env)
 
